@@ -8,8 +8,8 @@ func DashboardPage() compose.PageSpec {
 		Title:  "Dashboard",
 		Layout: "title-grid",
 		Widgets: []compose.WidgetSpec{
-			{Name: "test_1", URL: "/widgets/test/"},
-			{Name: "test_2", URL: "/widgets/test/"},
+			{Name: "todos", URL: "/widgets/todos/"},
+			{Name: "todos_form", URL: "/widgets/todos_form/"},
 			{Name: "test_3", URL: "/widgets/test/"},
 		},
 	}

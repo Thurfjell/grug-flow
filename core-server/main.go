@@ -25,7 +25,7 @@ func main() {
 	})
 
 	memRegistry := http.NewMemRegistry()
-	proxyManager := http.NewProxyManager(memRegistry).Add("test", "http://localhost:3000")
+	proxyManager := http.NewProxyManager(memRegistry).Add("test", "http://localhost:3000").Add("todos", "http://localhost:3000/todos").Add("todos_form", "http://localhost:3000/todos/form")
 
 	dashboardHandler := dashboard.Handler{Resolver: resolver}
 

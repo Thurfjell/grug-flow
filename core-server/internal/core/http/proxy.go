@@ -5,6 +5,7 @@ import (
 	nethttp "net/http"
 	"net/http/httputil"
 	"net/url"
+	"path"
 	"strings"
 )
 
@@ -24,7 +25,7 @@ func (pm *ProxyManager) Add(name, target string) *ProxyManager {
 
 	path := fmt.Sprintf("/widgets/%s/", name)
 	pm.routes = append(pm.routes, Route{
-		Method:  "GET",
+		Method:  "",
 		Path:    path,
 		Handler: pm.proxy.ServeHTTP,
 	})
@@ -84,7 +85,18 @@ func (h *WidgetProxyHandler) ServeHTTP(w nethttp.ResponseWriter, r *nethttp.Requ
 	proxy := &httputil.ReverseProxy{
 		Rewrite: func(pr *httputil.ProxyRequest) {
 			pr.SetURL(targetURL)
-			pr.Out.URL.Path = "/" + strings.Join(parts[1:], "/")
+			// Get the "extra" stuff after /widgets/name/
+			subPath := strings.Join(parts[1:], "/")
+
+			// Join the Registry path (/todos) with the subpath (form)
+			// This ensures /widgets/test/form -> /todos/form
+			pr.Out.URL.Path = path.Join(targetURL.Path, subPath)
+
+			// Important: path.Join strips trailing slashes,
+			// if your Elysia route needs it, add it back:
+			if strings.HasSuffix(r.URL.Path, "/") && !strings.HasSuffix(pr.Out.URL.Path, "/") {
+				pr.Out.URL.Path += "/"
+			}
 		},
 	}
 

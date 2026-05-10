@@ -19,8 +19,10 @@
   <main class="p-6">
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       {{ range .Widgets}}
-      <div hx-get="{{ .URL }}" hx-trigger="load" hx-swap="outerHTML" class="min-w-0">
-        Loading {{ .Name }}... :D
+      <div class="p-4 bg-zinc-900 border border-zinc-800 rounded-lg">
+        <div hx-get="{{ .URL }}" hx-trigger="load" hx-swap="innerHTML" class="min-w-0">
+          <span class="animate-pulse">Loading {{ .Name }}... :D</span>
+        </div>
       </div>
       {{ end }}
     </div>
