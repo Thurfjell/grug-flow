@@ -10,7 +10,6 @@ import (
 
 type Handler struct {
 	Resolver compose.LayoutResolver
-	Renderer compose.WidgetRenderer
 }
 
 func (h *Handler) Routes() []corehttp.Route {
@@ -22,7 +21,7 @@ func (h *Handler) Routes() []corehttp.Route {
 func (h *Handler) GetDashboard(w http.ResponseWriter, r *http.Request) {
 	page := DashboardPage()
 
-	html, err := compose.Render(h.Resolver, h.Renderer, page)
+	html, err := compose.Render(h.Resolver, page)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

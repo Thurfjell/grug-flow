@@ -1,12 +1,15 @@
 package http
 
 import (
+	"context"
 	"fmt"
 	nethttp "net/http"
+	"time"
 )
 
 type manager struct {
-	mux *nethttp.ServeMux
+	server *nethttp.Server
+	Addr   string
 }
 
 func New(routes ...Route) *manager {
@@ -17,11 +20,28 @@ func New(routes ...Route) *manager {
 		mux.HandleFunc(pattern, r.Handler)
 	}
 
+	s := &nethttp.Server{
+		Addr:        ":1337",
+		IdleTimeout: 5 * time.Minute,
+		Handler:     mux,
+	}
+
 	return &manager{
-		mux: mux,
+		server: s,
+		Addr:   s.Addr,
 	}
 }
 
 func (m *manager) Start() error {
-	return nethttp.ListenAndServe(":1337", m.mux)
+	err := m.server.ListenAndServe()
+
+	if err == nethttp.ErrServerClosed {
+		return nil
+	}
+
+	return err
+}
+
+func (m *manager) Stop(ctx context.Context) error {
+	return m.server.Shutdown(ctx)
 }

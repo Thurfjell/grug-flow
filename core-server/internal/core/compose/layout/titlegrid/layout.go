@@ -14,19 +14,12 @@ type layout struct {
 	tmpl *template.Template
 }
 
-func (l *layout) Render(page compose.PageSpec, widgets []template.HTML) (string, error) {
+func (l *layout) Render(page compose.PageSpec) (string, error) {
 	var buf bytes.Buffer
-	data := struct {
-		Page    compose.PageSpec
-		Widgets []template.HTML
-	}{
-		Page:    page,
-		Widgets: widgets,
-	}
 
-	err := l.tmpl.ExecuteTemplate(&buf, "title-grid.html", data)
+	err := l.tmpl.ExecuteTemplate(&buf, "layout.html", page)
 	if err != nil {
-		return "", fmt.Errorf("render: %w", err)
+		return "", fmt.Errorf("render title-grid: %w", err)
 	}
 
 	return buf.String(), err
@@ -36,7 +29,7 @@ func (l *layout) Render(page compose.PageSpec, widgets []template.HTML) (string,
 var templateFS embed.FS
 
 func New() (*layout, error) {
-	tmpl, err := template.ParseFS(templateFS, "template/title-grid.html")
+	tmpl, err := template.ParseFS(templateFS, "template/layout.html")
 	if err != nil {
 		return nil, err
 	}

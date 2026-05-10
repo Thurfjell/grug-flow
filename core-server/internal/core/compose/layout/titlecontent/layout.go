@@ -14,20 +14,12 @@ type layout struct {
 	tmpl *template.Template
 }
 
-func (l *layout) Render(page compose.PageSpec, widgets []string) (string, error) {
+func (l *layout) Render(page compose.PageSpec) (string, error) {
 	var buf bytes.Buffer
 
-	data := struct {
-		Page    compose.PageSpec
-		Widgets []string
-	}{
-		Page:    page,
-		Widgets: widgets,
-	}
-
-	err := l.tmpl.ExecuteTemplate(&buf, "title-content.html", data)
+	err := l.tmpl.ExecuteTemplate(&buf, "title-content.html", page)
 	if err != nil {
-		return "", fmt.Errorf("render: %w", err)
+		return "", fmt.Errorf("render title-content: %w", err)
 	}
 
 	return buf.String(), nil
@@ -36,7 +28,7 @@ func (l *layout) Render(page compose.PageSpec, widgets []string) (string, error)
 //go:embed template/*
 var templateFS embed.FS
 
-func New() (compose.Layout, error) {
+func New() (*layout, error) {
 	tmpl, err := template.ParseFS(templateFS, "template/title-content.html")
 	if err != nil {
 		return nil, err

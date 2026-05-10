@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>{{ .Page.Title }}</title>
+    <title>{{ .Title }}</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
@@ -10,14 +10,14 @@
 
 <body class="bg-zinc-950 text-white">
   <header class="p-4 border-b border-zinc-800">
-    <h1 class="text-xl font-bold">{{ .Page.Title }}</h1>
+    <h1 class="text-xl font-bold">{{ .Title }}</h1>
   </header>
 
   <main class="p-6">
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       {{ range .Widgets}}
         <div hx-get="{{ .URL }}" hx-trigger="laod" hx-swap="outerHTML" class="min-w-0">
-          Loading {{ .Name }... :D
+          Loading {{ .Name }}... :D
         </div>
       {{ end }}
     </div>

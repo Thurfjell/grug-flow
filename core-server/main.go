@@ -1,7 +1,12 @@
 package main
 
 import (
+	"context"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"core/internal/core/compose"
 	"core/internal/core/compose/layout/titlegrid"
@@ -19,13 +24,36 @@ func main() {
 		"title-grid": gridtemplate,
 	})
 
-	renderer := compose.StaticWidgetRenderer{}
-
-	dashboardHandler := dashboard.Handler{Resolver: resolver, Renderer: renderer}
+	dashboardHandler := dashboard.Handler{Resolver: resolver}
 
 	httpManager := http.New(dashboardHandler.Routes()...)
 
-	if err := httpManager.Start(); err != nil {
-		log.Fatalf("http manager start: %v", err)
+	serverErr := make(chan error, 1)
+
+	go func() {
+		serverErr <- httpManager.Start()
+	}()
+
+	log.Printf("core server started at - %s", httpManager.Addr)
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
+
+	select {
+	case err := <-serverErr:
+		log.Fatalf("server failed: %v", err)
+
+	case <-stop:
+		log.Println("Signal received, initiating teardown...")
 	}
+
+	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer shutdownCancel()
+
+	if err := httpManager.Stop(shutdownCtx); err != nil {
+		log.Fatalf("Graceful shutdown failed: %v", err)
+	}
+
+	log.Println("Server exited cleanly.")
+
 }
