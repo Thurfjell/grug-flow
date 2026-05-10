@@ -24,9 +24,12 @@ func main() {
 		"title-grid": gridtemplate,
 	})
 
+	memRegistry := http.NewMemRegistry()
+	proxyManager := http.NewProxyManager(memRegistry).Add("test", "http://localhost:3000")
+
 	dashboardHandler := dashboard.Handler{Resolver: resolver}
 
-	httpManager := http.New(dashboardHandler.Routes()...)
+	httpManager := http.New(proxyManager.Routes(), dashboardHandler.Routes())
 
 	serverErr := make(chan error, 1)
 

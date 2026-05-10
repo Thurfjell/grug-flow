@@ -32,7 +32,7 @@ func RegisterRoutes(mux *http.ServeMux, routes []Route) {
 	for _, r := range routes {
 		handler := chain(r.Handler, r.Middlewares...)
 
-		mux.HandleFunc(fmt.Sprint("%s %s", r.Method, r.Path), func(w http.ResponseWriter, r *http.Request) {
+		mux.HandleFunc(fmt.Sprintf("%s %s", r.Method, r.Path), func(w http.ResponseWriter, r *http.Request) {
 			handler.ServeHTTP(w, r)
 		})
 	}

@@ -1,11 +1,14 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>{{ .Title }}</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<head>
+  <meta charset="utf-8">
+  <title>{{ .Title }}</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0-beta3"
+    integrity="sha384-bq4nTap5u8w4XlVP8JHkDioQVZBI5wUx5PxNwlbCq27H5QJ+q0CSeJcTYU+PLdCp"
+    crossorigin="anonymous"></script>
 </head>
 
 <body class="bg-zinc-950 text-white">
@@ -16,9 +19,9 @@
   <main class="p-6">
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       {{ range .Widgets}}
-        <div hx-get="{{ .URL }}" hx-trigger="laod" hx-swap="outerHTML" class="min-w-0">
-          Loading {{ .Name }}... :D
-        </div>
+      <div hx-get="{{ .URL }}" hx-trigger="load" hx-swap="outerHTML" class="min-w-0">
+        Loading {{ .Name }}... :D
+      </div>
       {{ end }}
     </div>
   </main>
