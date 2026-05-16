@@ -1,6 +1,7 @@
 package http
 
 import (
+	"core/internal/core"
 	"fmt"
 	nethttp "net/http"
 	"net/http/httputil"
@@ -12,7 +13,7 @@ import (
 
 type ProxyManager struct {
 	proxy  *WidgetProxyHandler
-	routes []Route
+	routes []core.Route
 }
 
 func NewProxyManager(req WidgetRegistry) *ProxyManager {
@@ -25,7 +26,7 @@ func (pm *ProxyManager) Add(name, target string) *ProxyManager {
 	pm.proxy.Registry.Add(name, target)
 
 	path := fmt.Sprintf("/widgets/%s/", name)
-	pm.routes = append(pm.routes, Route{
+	pm.routes = append(pm.routes, core.Route{
 		Method:  "",
 		Path:    path,
 		Handler: pm.proxy.ServeHTTP,
@@ -34,7 +35,7 @@ func (pm *ProxyManager) Add(name, target string) *ProxyManager {
 	return pm
 }
 
-func (pm *ProxyManager) Routes() []Route {
+func (pm *ProxyManager) Routes() []core.Route {
 	return pm.routes
 }
 
@@ -59,7 +60,7 @@ func NewMemRegistry() *MemRegistry {
 
 func (m *MemRegistry) Get(name string) (string, bool) {
 	m.mu.RLock()
-	defer m.mu.Unlock()
+	defer m.mu.RUnlock()
 	url, ok := m.Widgets[name]
 	return url, ok
 }

@@ -17,7 +17,7 @@ type layout struct {
 func (l *layout) Render(page compose.PageSpec) (string, error) {
 	var buf bytes.Buffer
 
-	err := l.tmpl.ExecuteTemplate(&buf, "title-content.html", page)
+	err := l.tmpl.ExecuteTemplate(&buf, "layout.html", page)
 	if err != nil {
 		return "", fmt.Errorf("render title-content: %w", err)
 	}
@@ -29,7 +29,7 @@ func (l *layout) Render(page compose.PageSpec) (string, error) {
 var templateFS embed.FS
 
 func New() (*layout, error) {
-	tmpl, err := template.ParseFS(templateFS, "template/title-content.html")
+	tmpl, err := template.ParseFS(templateFS, "template/layout.html")
 	if err != nil {
 		return nil, err
 	}

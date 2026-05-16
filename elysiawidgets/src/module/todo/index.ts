@@ -1,5 +1,5 @@
-import Elysia, { t } from "elysia";
-import { html, Html } from "@elysia/html";
+import Elysia from "elysia";
+import { html } from "@elysia/html";
 import { Service } from "./service";
 import { TodoModel } from "./model";
 

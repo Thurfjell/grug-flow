@@ -2,6 +2,7 @@
 package compose
 
 import (
+	"core/internal/core"
 	"fmt"
 )
 
@@ -11,6 +12,7 @@ type Layout interface {
 
 type LayoutResolver interface {
 	Get(name string) Layout
+	GetNavItems() []core.NavItem
 }
 
 type WidgetSpec struct {
@@ -19,12 +21,15 @@ type WidgetSpec struct {
 }
 
 type PageSpec struct {
-	Title   string
-	Layout  string
-	Widgets []WidgetSpec
+	Title    string
+	Layout   string
+	Href     string
+	Widgets  []WidgetSpec
+	NavItems []core.NavItem
 }
 
 func Render(resolver LayoutResolver, page PageSpec) (string, error) {
+	page.NavItems = resolver.GetNavItems()
 	layout := resolver.Get(page.Layout)
 
 	if layout == nil {

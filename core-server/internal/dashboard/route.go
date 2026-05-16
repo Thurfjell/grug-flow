@@ -4,17 +4,24 @@ import (
 	"log"
 	"net/http"
 
+	"core/internal/core"
 	"core/internal/core/compose"
-	corehttp "core/internal/core/http"
 )
 
 type Handler struct {
 	Resolver compose.LayoutResolver
 }
 
-func (h *Handler) Routes() []corehttp.Route {
-	return []corehttp.Route{
-		{Method: "GET", Path: "/dashboard", Handler: h.GetDashboard},
+func (h *Handler) Routes() []core.Route {
+	return []core.Route{
+		{
+			Method: "GET",
+			Path:   "/dashboard",
+			Nav: &core.NavItem{
+				Label: "Dashboard",
+			},
+			Handler: h.GetDashboard,
+		},
 	}
 }
 
