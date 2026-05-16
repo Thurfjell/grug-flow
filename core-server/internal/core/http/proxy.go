@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"path"
 	"strings"
+	"sync"
 )
 
 type ProxyManager struct {
@@ -49,6 +50,7 @@ type WidgetProxyHandler struct {
 
 type MemRegistry struct {
 	Widgets map[string]string
+	mu      sync.RWMutex
 }
 
 func NewMemRegistry() *MemRegistry {
@@ -56,11 +58,15 @@ func NewMemRegistry() *MemRegistry {
 }
 
 func (m *MemRegistry) Get(name string) (string, bool) {
+	m.mu.RLock()
+	defer m.mu.Unlock()
 	url, ok := m.Widgets[name]
 	return url, ok
 }
 
 func (m *MemRegistry) Add(name, value string) bool {
+	m.mu.Lock()
+	defer m.mu.Unlock()
 	m.Widgets[name] = value
 	return true
 }

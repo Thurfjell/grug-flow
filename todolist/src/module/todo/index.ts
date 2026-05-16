@@ -3,6 +3,12 @@ import { html, Html } from "@elysia/html";
 import { Service } from "./service";
 import { TodoModel } from "./model";
 
+const escape = (str: string) =>
+  str.replace(/&/g, "&amp;")
+     .replace(/</g, "&lt;")
+     .replace(/>/g, "&gt;")
+     .replace(/"/g, "&quot;")
+
 export const todo = new Elysia({ prefix: "/todos" })
   .use(html())
   .get("/", async () => {
@@ -27,7 +33,7 @@ export const todo = new Elysia({ prefix: "/todos" })
                     .map(
                       (todo) => `
                 <li id="${todo.id}" class="px-4 py-3 hover:bg-zinc-800/50 transition-colors group flex items-center justify-between">
-                    <span class="text-zinc-200 group-hover:text-white">${todo.name}</span>
+                    <span class="text-zinc-200 group-hover:text-white">${escape(todo.name)}</span>
                     <div class="flex gap-2">
                       <button class="text-zinc-600 hover:text-red-400 text-xs uppercase font-bold tracking-tighter">Delete</button>
                     </div>
@@ -70,8 +76,9 @@ export const todo = new Elysia({ prefix: "/todos" })
   .post(
     "/",
     async ({ body, set }) => {
+      set.status = 204 // no content
       set.headers["HX-Trigger"] = "todo-added";
-      return Service.create(body);
+      Service.create(body);
     },
     {
       body: TodoModel.createBody,
