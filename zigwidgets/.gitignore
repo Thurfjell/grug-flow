@@ -1,0 +1,10 @@
+# Zig compiler build outputs
+zig-out/
+zig-cache/
+
+# Local testing and development artifacts
+.zig-cache/
+
+# Operating system files (optional but recommended)
+.DS_Store
+Thumbs.db
